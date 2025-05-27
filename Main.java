@@ -168,6 +168,85 @@ class ArrayMinMaxLogger {
     }
 }
 
+class RemoveNegatives {
+    public static int[] removeNegativeNumbers(int[] input) {
+
+        int count = 0;
+        for (int num : input) {
+            if (num >= 0) {
+                count++;
+            }
+        }
+        int[] result = new int[count];
+        int index = 0;
+        for (int num : input) {
+            if (num >= 0) {
+                result[index++] = num;
+            }
+        }
+        return result;
+    }
+}
+
+class UniqEl{
+    public static int[] getUniqueNumbers(int[] input) {
+        if (input == null || input.length == 0) {
+            return new int[0];
+        }
+
+        int[] temp = new int[input.length];
+        int size = 0;
+
+        for (int num : input) {
+            boolean found = false;
+            for (int i = 0; i < size; i++) {
+                if (temp[i] == num) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                temp[size++] = num;
+            }
+        }
+        return Arrays.copyOf(temp, size);
+    }
+}
+
+class StringFilter {
+
+    public static String[] filterStrings(String[] input) {
+        if (input == null) {
+            return new String[0];
+        }
+
+        List<String> resultList = new ArrayList<>();
+
+        for (String str : input) {
+            if (str != null && str.length() > 3) {
+                resultList.add(str);
+            }
+        }
+
+        return resultList.toArray(new String[0]);
+    }
+}
+
+class ArrayAverage {
+    public static int calculateAverage(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            throw new IllegalArgumentException("Массив не может быть пустым или null");
+        }
+
+        int sum = 0;
+        for (int num : numbers) {
+            sum += num;
+        }
+        // Округляем среднее значение до ближайшего целого
+        return (int) Math.round((double) sum / numbers.length);
+    }
+}
+
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -210,8 +289,30 @@ public class Main {
 
         int[] numbers = {12, 5, 27, 8, 19, 3, 15};
 
-        System.out.println("Исходный массив: " + Arrays.toString(numbers));
+        System.out.println("Исходный " + Arrays.toString(numbers));
         ArrayMinMaxLogger.findMinMaxAndLog(numbers);
+
+        int[] input = {5, -3, 8, -1, 0, 2, -7, 4};
+        int[] resultArr = RemoveNegatives.removeNegativeNumbers(input);
+
+        System.out.println("Исходный: " + Arrays.toString(input));
+        System.out.println("Результат: " + Arrays.toString(resultArr));
+
+        int[] input3 = {1, 2, 3, 2, 4, 1, 5};
+        int[] unique = UniqEl.getUniqueNumbers(input3);
+
+        System.out.println("Исходный: " + Arrays.toString(input3));
+        System.out.println("Уникальный: " + Arrays.toString(unique));
+
+        String[] input4 = {"cat", "elephant", "dog", "giraffe"};
+        String[] result4 = StringFilter.filterStrings(input4);
+
+        System.out.println("Исходный: " + Arrays.toString(input4));
+        System.out.println("Результат: " + Arrays.toString(result4));
+
+        int[] numbers2 = {4, 2, 7, 5, 1};
+        int average = ArrayAverage.calculateAverage(numbers2);
+        System.out.println("Среднее: " + average);
 
     }
 }
