@@ -1,14 +1,12 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+//4
 
 
 class Answer {
@@ -247,6 +245,89 @@ class ArrayAverage {
     }
 }
 
+//4
+class LLTasks {
+    public static LinkedList<String> removeOddLengthStrings(LinkedList<String> list) {
+        if (list == null) return new LinkedList<>();
+
+        LinkedList<String> result = new LinkedList<>();
+        for (String str : list) {
+            if (str != null && str.length() % 2 == 0) {
+                result.add(str);
+            }
+        }
+        return result;
+    }
+}
+
+class MyStack {
+    private LinkedList<String> stack;
+
+    public MyStack() {
+        stack = new LinkedList<>();
+    }
+
+    // Добавить
+    public void push(String element) {
+        stack.addFirst(element);  // или stack.push(element);
+    }
+
+    // Возвращает и удаляет
+    public String pop() {
+        if (stack.isEmpty()) {
+            throw new IllegalStateException("Стек пуст");
+        }
+        return stack.removeFirst();  // или stack.pop();
+    }
+
+    // Возвращает без удаления
+    public String peek() {
+        if (stack.isEmpty()) {
+            throw new IllegalStateException("Стек пуст");
+        }
+        return stack.getFirst();  // или stack.peek();
+    }
+
+    // Все элементы стека
+    public LinkedList<String> getElements() {
+        return new LinkedList<>(stack);  // возвращаем копию
+    }
+}
+
+class ListUtils {
+    public static int countOccurrences(LinkedList<String> list, String value) {
+        int res = 0;
+        int c=res;
+        for ( String el : list ) {
+            if (el.equals(value) ){
+                c++;
+            }
+        }
+        res=c;
+    return res;
+    }
+}
+
+class DequeTasks {
+    public static void rotateDeque(Deque<Integer> deque, int n) {
+        if (deque == null || deque.isEmpty() || n == 0) {
+            return;
+        }
+
+        int size = deque.size();
+        n = n % size;  // Убираем полные обороты
+
+        // Если n отрицательное - преобразуем в эквивалентный положительный сдвиг
+        if (n < 0) {
+            n += size;
+        }
+        // Поворачиваем вправо на n позиций
+        for (int i = 0; i < n; i++) {
+            deque.addFirst(deque.removeLast());
+        }
+    }
+}
+
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -313,6 +394,48 @@ public class Main {
         int[] numbers2 = {4, 2, 7, 5, 1};
         int average = ArrayAverage.calculateAverage(numbers2);
         System.out.println("Среднее: " + average);
+
+        //4
+        LinkedList<String> ll = new LinkedList<>();
+        ll.add("apple");
+        ll.add("banana");
+        ll.add("pear");
+        ll.add("grape");
+        ll.add("apple");
+
+        System.out.println("5 Исходный список: " + ll);
+        LinkedList<String> result5 = LLTasks.removeOddLengthStrings(ll);
+        System.out.println("5 Результат: " + result5);
+
+        MyStack stack = new MyStack();
+
+        stack.push("apple");
+        stack.push("banana");
+        stack.push("pear");
+        stack.push("grape");
+
+        System.out.println("Все элементы: " + stack.getElements());
+        System.out.println("Peek: " + stack.peek());
+        System.out.println("Pop: " + stack.pop());
+        System.out.println("Оставшиеся элементы: " + stack.getElements());
+
+        String v = "apple";
+        System.out.println("Количество " + String.valueOf(ListUtils.countOccurrences(ll,v)));
+
+        Deque<Integer> deque = new ArrayDeque<>();
+        deque.addLast(1);
+        deque.addLast(2);
+        deque.addLast(3);
+        deque.addLast(4);
+        deque.addLast(5);
+
+        System.out.println("Исходная очередь: " + deque);
+
+        DequeTasks.rotateDeque(deque, 2);
+        System.out.println("Поворот вправо на 2: " + deque);
+
+        DequeTasks.rotateDeque(deque, -1);
+        System.out.println("Поворот влево на 1: " + deque);
 
     }
 }
