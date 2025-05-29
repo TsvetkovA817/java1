@@ -328,6 +328,175 @@ class DequeTasks {
     }
 }
 
+//5
+
+class StudentRegistry {
+    private final Map<String, List<Integer>> studentGrades = new HashMap<>();
+
+    // Добавляет или обновляет запись о студенте
+    public void addStudentGrade(String name, Integer grade) {
+        studentGrades.computeIfAbsent(name, k -> new ArrayList<>()).add(grade);
+    }
+
+    // Находит оценки студента по имени
+    public List<Integer> findStudentGrades(String name) {
+        return studentGrades.getOrDefault(name, Collections.emptyList());
+    }
+
+    // Возвращает весь справочник
+    public Map<String, List<Integer>> getAllStudents() {
+        return new HashMap<>(studentGrades); // копия
+    }
+
+    // Удаляет студента из справочника
+    public void removeStudent(String name) {
+        studentGrades.remove(name);
+    }
+}
+
+class BrowserHistory {
+    private final Deque<String> history = new LinkedList<>();
+    private static final int MAX_HISTORY_SIZE = 10;
+
+    // Добавляет сайт в историю посещений
+    public void visitSite(String site) {
+        if (site == null || site.isBlank()) {
+            throw new IllegalArgumentException("Сайт не может быть пустым");
+        }
+        if (history.size() >= MAX_HISTORY_SIZE) {
+            history.removeLast(); // Удаляем самый старый
+        }
+        history.addFirst(site); // Добавляем в начало очереди
+    }
+
+    // Возвращает сайт, который был посещен steps назад
+    public String back(int steps) {
+        if (steps <= 0 || steps > history.size()) {
+            return null;
+        }
+
+        // Используем stream для безопасного доступа к элементу
+        Optional<String> result = history.stream()
+                .skip(steps - 1L)
+                .findFirst();
+
+        return result.orElse(null);
+    }
+
+    // Возвращает всю историю посещений (последний посещенный сайт первым)
+    public Deque<String> getHistory() {
+        return new LinkedList<>(history); // Возвращаем копию для защиты данных
+    }
+
+    public void clearHistory() {
+        history.clear();
+    }
+
+    public boolean containsSite(String site) {
+        return history.contains(site);
+    }
+
+}
+
+class ShoppingBasket {
+    private final Map<String, Integer> basket = new HashMap<>();
+
+    // Добавляет продукт в корзину или увеличивает количество
+    public void addProduct(String product, Integer quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Количество должно быть > 0");
+        }
+        if (product == null || quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Некорректные параметры");
+        }
+        basket.put(product, basket.getOrDefault(product, 0) + quantity);
+    }
+
+    // Удаляет продукт из корзины
+    public void removeProduct(String product) {
+        basket.remove(product);
+    }
+
+    // Обновляет количество продукта
+    public void updateQuantity(String product, Integer quantity) {
+        if (basket.containsKey(product) && quantity != null && quantity > 0) {
+            basket.put(product, quantity);
+        }
+    }
+
+    // Проверяет наличие продукта и возвращает его количество
+    public int checkProduct(String product) {
+        return basket.getOrDefault(product, 0);
+    }
+
+    // Выводит все продукты в корзине
+    public void showBasket() {
+        if (basket.isEmpty()) {
+            System.out.println("Корзина пуста");
+            return;
+        }
+
+        System.out.println("Содержимое корзины:");
+        for (Map.Entry<String, Integer> entry : basket.entrySet()) {
+            System.out.printf("- %s: %d шт.%n", entry.getKey(), entry.getValue());
+        }
+    }
+}
+
+
+class MergeSort {
+
+    // Основной метод
+    public static void mergeSort(int[] array) {
+        if (array == null || array.length <= 1) {
+            return;
+        }
+        int[] helper = new int[array.length];
+        mergeSort(array, helper, 0, array.length - 1);
+    }
+
+    // Рекурсивный метод сортировки
+    private static void mergeSort(int[] array, int[] helper, int low, int high) {
+        if (low < high) {
+            int middle = low + (high - low) / 2;
+            mergeSort(array, helper, low, middle);      // Сортировка левой половины
+            mergeSort(array, helper, middle + 1, high); // Сортировка правой половины
+            merge(array, helper, low, middle, high);   // Слияние двух отсортированных половин
+        }
+    }
+
+    // Метод для слияния двух отсортированных подмассивов
+    private static void merge(int[] array, int[] helper, int low, int middle, int high) {
+        //вспомогательный массив
+        for (int i = low; i <= high; i++) {
+            helper[i] = array[i];
+        }
+
+        int helperLeft = low;
+        int helperRight = middle + 1;
+        int current = low;
+
+        // Итерация по вспомогательному массиву. Сравнение элементов из левой и правой половин,
+        // и запись меньшего элемента в исходный массив
+        while (helperLeft <= middle && helperRight <= high) {
+            if (helper[helperLeft] <= helper[helperRight]) {
+                array[current] = helper[helperLeft];
+                helperLeft++;
+            } else {
+                array[current] = helper[helperRight];
+                helperRight++;
+            }
+            current++;
+        }
+
+        // Копируем оставшиеся элементы левой половины (если такие есть)
+        while (helperLeft <= middle) {
+            array[current] = helper[helperLeft];
+            current++;
+            helperLeft++;
+        }
+    }
+}
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -436,6 +605,70 @@ public class Main {
 
         DequeTasks.rotateDeque(deque, -1);
         System.out.println("Поворот влево на 1: " + deque);
+
+        //5
+
+        StudentRegistry registry = new StudentRegistry();
+
+        // Добавляем студентов
+        registry.addStudentGrade("Иван Иванов", 5);
+        registry.addStudentGrade("Иван Иванов", 4); // + вторая оценка
+        registry.addStudentGrade("Мария Петрова", 3);
+
+        // Поиск студента
+        System.out.println("Оценки Ивана: " + registry.findStudentGrades("Иван Иванов"));
+        System.out.println("если нет имени : " + registry.findStudentGrades("нет имени"));
+
+        // Получаем всех студентов
+        System.out.println("Все студенты: " + registry.getAllStudents());
+
+        // Удаляем студента
+        registry.removeStudent("Мария Петрова");
+        System.out.println("После удаления: " + registry.getAllStudents());
+
+
+        BrowserHistory browser = new BrowserHistory();
+
+        // Добавляем сайты в историю
+        browser.visitSite("google.com");
+        browser.visitSite("youtube.com");
+        browser.visitSite("github.com");
+        browser.visitSite("stackoverflow.com");
+
+        // Тест
+        System.out.println("Вся история: " + browser.getHistory());
+        System.out.println("1 шаг назад: " + browser.back(1));
+        System.out.println("3 шага назад: " + browser.back(3));
+        System.out.println("5 шагов назад: " + browser.back(5));
+
+        ShoppingBasket basket = new ShoppingBasket();
+        // Добавляем продукты
+        basket.addProduct("Яблоки", 5);
+        basket.addProduct("Бананы", 3);
+        basket.addProduct("Яблоки", 2); // Увеличим количество
+
+        // Проверяем продукты
+        System.out.println("Яблок в корзине: " + basket.checkProduct("Яблоки"));
+        System.out.println("Апельсинов в корзине: " + basket.checkProduct("Апельсины"));
+
+        // Обновляем количество
+        basket.updateQuantity("Бананы", 10);
+        basket.updateQuantity("Апельсины", 5); // Не добавится
+
+        // Удаляем
+        basket.removeProduct("Яблоки");
+
+        // Показываем корзину
+        basket.showBasket();
+
+        int[] initArray;
+        initArray = new int[]{38, 27, 43, 3, 9, 82, 10};
+
+        System.out.println("Начальный массив:");
+        System.out.println(Arrays.toString(initArray));
+        MergeSort.mergeSort(initArray);
+        System.out.println("Сортированный:");
+        System.out.println(Arrays.toString(initArray));
 
     }
 }
